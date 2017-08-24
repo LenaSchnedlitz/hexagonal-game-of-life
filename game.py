@@ -8,10 +8,11 @@ Rules: B2/S12
 
 """
 
+from operator import add
+
 # Rule Configuration
-STATES = ('DEAD', 'ALIVE')
-B = (2,)
-S = (1, 2)
+B_RULE = (2,)  # Birth
+S_RULE = (1, 2)  # Survival
 
 
 class Game:
@@ -42,10 +43,25 @@ class Generation:
         # TODO
         pass
 
-    def _survives(self, row, col):
-        # TODO
-        pass
+    def _count(self, cells):
+        return 0
 
-    def _is_born(self, row, col):
-        # TODO
-        pass
+    def _is_born(self, cell):
+        return self._count(Generation._neighbours(cell)) in B_RULE
+
+    def _survives(self, cell):
+        return self._count(Generation._neighbours(cell)) in S_RULE
+
+    @staticmethod
+    def _neighbours(cell):
+        row, _ = cell
+
+        left = - (row % 2)
+        right = left + 1
+        relative_neighbour_coordinates = (
+            (-1, left), (-1, right),
+            (0, -1), (0, 1),
+            (1, left), (1, right)
+        )
+
+        return map(add, cell, relative_neighbour_coordinates)
