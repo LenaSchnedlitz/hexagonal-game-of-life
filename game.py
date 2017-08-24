@@ -8,8 +8,6 @@ Rules: B2/S12
 
 """
 
-from operator import add
-
 # Rule Configuration
 B_RULE = (2,)  # Birth
 S_RULE = (1, 2)  # Survival
@@ -31,37 +29,45 @@ class Game:
 
 
 class Generation:
-    def __init__(self, rows, cols):
-        self.rows = rows
-        self.cols = cols
+    def __init__(self, grid):
+        self.grid = grid
 
     def draw(self):
         # TODO
         pass
 
     def tick(self):
-        # TODO
-        pass
+        new_grid = [[
+            (self._is_born((row_i, col_i)) or self._survives((row_i, col_i)))
+            for col_i, col in enumerate(row)]
+            for row_i, row in enumerate(self.grid)]
+        return Generation(new_grid)
 
-    def _count(self, cells):
-        return 0
+    def is_alive(self, cell):
+        row, col = cell
+        return self.grid[row][col]
 
     def _is_born(self, cell):
-        return self._count(Generation._neighbours(cell)) in B_RULE
+        return not self.is_alive(cell) \
+               and sum(self._neighbours(cell)) in B_RULE
 
     def _survives(self, cell):
-        return self._count(Generation._neighbours(cell)) in S_RULE
+        return self.is_alive(cell) and sum(self._neighbours(cell)) in S_RULE
+
+    def _neighbours(self, cell):
+        row, col = cell
+        positions = Generation._relative_neighbour_coordinates(row % 2)
+
+        neighbours = [self.grid[row + r][col + c] for (r, c) in positions]
+        return neighbours
 
     @staticmethod
-    def _neighbours(cell):
-        row, _ = cell
+    def _relative_neighbour_coordinates(offset):
+        # offset is caused by alternating cell alignment in a hex grid
 
-        left = - (row % 2)
-        right = left + 1
-        relative_neighbour_coordinates = (
+        left, right = -offset, -offset + 1
+        return (
             (-1, left), (-1, right),
             (0, -1), (0, 1),
             (1, left), (1, right)
         )
-
-        return map(add, cell, relative_neighbour_coordinates)
