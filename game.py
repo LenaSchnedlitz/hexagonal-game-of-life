@@ -30,7 +30,9 @@ class Game:
 
 class Generation:
     def __init__(self, grid):
-        self.grid = grid
+        self._grid = grid
+        self._rows = len(self._grid)
+        self._cols = len(self._grid[0])
 
     def draw(self):
         # TODO
@@ -40,25 +42,28 @@ class Generation:
         new_grid = [[
             (self._is_born((row_i, col_i)) or self._survives((row_i, col_i)))
             for col_i, col in enumerate(row)]
-            for row_i, row in enumerate(self.grid)]
+            for row_i, row in enumerate(self._grid)]
         return Generation(new_grid)
 
     def is_alive(self, cell):
         row, col = cell
-        return self.grid[row][col]
+        return self._grid[row][col]
 
     def _is_born(self, cell):
         return not self.is_alive(cell) \
                and sum(self._neighbours(cell)) in B_RULE
 
     def _survives(self, cell):
-        return self.is_alive(cell) and sum(self._neighbours(cell)) in S_RULE
+        return self.is_alive(cell) \
+               and sum(self._neighbours(cell)) in S_RULE
 
     def _neighbours(self, cell):
         row, col = cell
-        positions = Generation._relative_neighbour_coordinates(row % 2)
+        positions = self._relative_neighbour_coordinates(row % 2)
 
-        neighbours = [self.grid[row + r][col + c] for (r, c) in positions]
+        neighbours = [
+            self._grid[(row + r) % self._rows][(col + c) % self._cols]
+            for (r, c) in positions]
         return neighbours
 
     @staticmethod
