@@ -7,15 +7,26 @@ Rules: B2/S12
  - All other live cells die.
 
 """
+from helper import GridHelper
 
-# Rule Configuration
-B_RULE = (2,)  # Birth
-S_RULE = (1, 2)  # Survival
+
+RULE_CONFIGURATION = {
+    'B': (2,),  # Birth
+    'S': (1, 2)  # Survival
+}
+
+GRID_CONFIGURATION = {
+    'CELL_RADIUS': 6,
+    'ROWS': 35,
+    'COLS': 42,
+    'CROP_BIGGER_GRIDS': True
+}
 
 
 class Game:
     def __init__(self, seed, max_steps=100):
-        self.generation = seed
+        self.helper = GridHelper(GRID_CONFIGURATION)
+        self.generation = Generation(self.helper.sanitize(seed))
         self.max = max_steps
         self.count = 0
 
@@ -51,11 +62,11 @@ class Generation:
 
     def _is_born(self, cell):
         return not self.is_alive(cell) \
-               and sum(self._neighbours(cell)) in B_RULE
+               and sum(self._neighbours(cell)) in RULE_CONFIGURATION.get('B')
 
     def _survives(self, cell):
         return self.is_alive(cell) \
-               and sum(self._neighbours(cell)) in S_RULE
+               and sum(self._neighbours(cell)) in RULE_CONFIGURATION.get('S')
 
     def _neighbours(self, cell):
         row, col = cell
@@ -76,3 +87,13 @@ class Generation:
             (0, -1), (0, 1),
             (1, left), (1, right)
         )
+
+
+test_seed = [
+    [False, False, False, True],
+    [False, False, True, False],
+    [False, True, False, True],
+    [True, True, False, True]
+]
+
+Game(test_seed).play()
