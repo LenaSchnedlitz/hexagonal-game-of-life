@@ -21,7 +21,6 @@ class GridHelper:
     def sanitize(self, grid):
         grid = self.sanitize_cols(grid)
         grid = self.sanitize_rows(grid)
-        print(grid)
         return grid
 
     def sanitize_cols(self, grid):
@@ -105,8 +104,9 @@ class HexGeometry:
             (root * radius, 0),
             (0.5 * root * radius, -0.5 * radius)
         ]
+        odd_even_offset = -0.5 * (row % 2) * HexGeometry.cell_width(radius)
         r = row * HexGeometry.cell_height(radius) + h_offset
-        c = col * HexGeometry.cell_width(radius) + w_offset
+        c = col * HexGeometry.cell_width(radius) + w_offset + odd_even_offset
 
         return [(c + c_hex, r + r_hex) for (c_hex, r_hex) in hexagon]
 
@@ -142,19 +142,20 @@ class Illustrator:
         self.row_count = row_count
         self.col_count = col_count
 
-        # Visuals
+        # Image Coordinates
         raw_width = HexGeometry.width(col_count, cell_radius)
         raw_height = HexGeometry.height(row_count, cell_radius)
         self.width, raw_w_offset = self.__beautify(raw_width)
         self.height, raw_h_offset = self.__beautify(raw_height)
         self.w_offset = HexGeometry.width_offset(raw_w_offset, cell_radius)
         self.h_offset = HexGeometry.height_offset(raw_h_offset, cell_radius)
+
+        # Color
         self.palette = palette
 
     def draw(self, generation):
         img = Image.new('RGB', [self.width, self.height], (250, 0, 100))
         draw = ImageDraw.Draw(img, 'RGB')
-        color = (250, 250, 250)
         params = {
             'radius': self.cell_radius,
             'w_offset': self.w_offset,
@@ -162,11 +163,12 @@ class Illustrator:
         }
 
         for row in range(self.row_count):
-            for col in range(self.col_count):
+            for col in range(self.col_count + row % 2):
+                color = (250, 0, 100)
+                if generation.is_alive([row, col]):
+                    color = (255, 255, 255)
                 draw.polygon(HexGeometry.hexagon(row, col, **params),
                              fill=color, outline=color)
-        print(HexGeometry.hexagon(0, 0, **params))
-        print(HexGeometry.hexagon(self.row_count, self.col_count, **params))
         img.show()
 
     def __beautify(self, length):

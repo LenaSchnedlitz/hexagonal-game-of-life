@@ -16,8 +16,8 @@ RULE_CONFIGURATION = {
 
 GRID_CONFIGURATION = {
     'cell_radius': 6,
-    'rows': 35,
-    'cols': 42,
+    'rows': 37,
+    'cols': 43,
     'crop_bigger_grids': True
 }
 
@@ -56,8 +56,8 @@ class Generation:
     def __init__(self, grid, previous=None):
         self._grid = grid
         self._previous = previous
-        self._row_size = len(self._grid)
-        self._col_size = len(self._grid[0])
+        self._rows = len(self._grid)
+        self._cols = len(self._grid[0])
 
     def tick(self):
         new_grid = [
@@ -74,7 +74,7 @@ class Generation:
 
     def is_alive(self, cell):
         row, col = cell
-        return self._grid[row][col]
+        return self._grid[row % self._rows][col % self._cols]
 
     def was_alive(self, cell):
         if self._previous:
@@ -95,7 +95,7 @@ class Generation:
         positions = Generation._relative_neighbour_coordinates(row % 2)
 
         neighbours = [
-            self._grid[(row + r) % self._row_size][(col + c) % self._col_size]
+            self._grid[(row + r) % self._rows][(col + c) % self._cols]
             for (r, c) in positions
         ]
         return neighbours
