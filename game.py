@@ -46,8 +46,8 @@ class Game:
     def __set_up_illustrator(seed):
         config = {
             'cell_radius': GRID_CONFIGURATION.get('cell_radius'),
-            'row_size': len(seed),
-            'col_size': len(seed[0])
+            'row_count': len(seed),
+            'col_count': len(seed[0])
         }
         return helper.Illustrator(**config)
 
