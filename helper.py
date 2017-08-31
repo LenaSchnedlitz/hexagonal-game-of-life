@@ -136,7 +136,7 @@ class HexGeometry:
 
 
 class Illustrator:
-    def __init__(self, cell_radius, row_count, col_count, palette=None):
+    def __init__(self, color_config, cell_radius, row_count, col_count):
         # Grid
         self.cell_radius = cell_radius
         self.row_count = row_count
@@ -151,10 +151,11 @@ class Illustrator:
         self.h_offset = HexGeometry.height_offset(raw_h_offset, cell_radius)
 
         # Color
-        self.palette = palette
+        self.palette = color_config.get(color_config['palette'])
+        assert len(self.palette) >= 4
 
     def draw(self, generation):
-        img = Image.new('RGB', [self.width, self.height], (250, 0, 100))
+        img = Image.new('RGB', [self.width, self.height], self.palette[0])
         draw = ImageDraw.Draw(img, 'RGB')
         params = {
             'radius': self.cell_radius,
@@ -164,9 +165,10 @@ class Illustrator:
 
         for row in range(self.row_count):
             for col in range(self.col_count + row % 2):
-                color = (250, 0, 100)
-                if generation.is_alive([row, col]):
-                    color = (255, 255, 255)
+                cell = [row, col]
+                color = self.palette[
+                    2 * generation.is_alive(cell) + generation.was_alive(cell)
+                ]
                 draw.polygon(HexGeometry.hexagon(row, col, **params),
                              fill=color, outline=color)
         img.show()

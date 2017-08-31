@@ -21,12 +21,30 @@ GRID_CONFIGURATION = {
     'crop_bigger_grids': True
 }
 
-GRID_CONFIGURATION['rows'] = 5
-GRID_CONFIGURATION['cols'] = 3
+GRID_CONFIGURATION['rows'] = 5  # test settings TODO remove
+GRID_CONFIGURATION['cols'] = 3  # test settings TODO remove
+
+# Colors taken from 'Nord' by arcticicestudio
+# https://git.io/nord
+COLOR_CONFIGURATION = {
+    'palette': 'dark_mode',
+    'dark_mode': [
+        (46, 52, 64),  # dead
+        (59, 66, 82),  # dying
+        (236, 239, 244),  # born
+        (216, 222, 233)  # alive
+    ],
+    'light_mode': [
+        (216, 222, 233),  # dead
+        (236, 239, 244),  # dying
+        (59, 66, 82),  # born
+        (46, 52, 64)  # alive
+    ]
+}
 
 
 class Game:
-    def __init__(self, seed, max_steps=0):
+    def __init__(self, seed, max_steps=5):
         self.helper = helper.GridHelper(**GRID_CONFIGURATION)
         seed = self.helper.sanitize(seed)
         self.generation = Generation(seed)
@@ -49,7 +67,7 @@ class Game:
             'row_count': len(seed),
             'col_count': len(seed[0])
         }
-        return helper.Illustrator(**config)
+        return helper.Illustrator(COLOR_CONFIGURATION, **config)
 
 
 class Generation:
@@ -103,7 +121,6 @@ class Generation:
     @staticmethod
     def _relative_neighbour_coordinates(offset):
         # offset is caused by alternating cell alignment in a hex grid
-
         left, right = -offset, -offset + 1
         return (
             (-1, left), (-1, right),
