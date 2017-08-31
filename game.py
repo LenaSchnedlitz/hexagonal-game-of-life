@@ -7,74 +7,97 @@ Rules: B2/S12
  - All other live cells die.
 
 """
-from helper import GridHelper
-
+import helper as helper
 
 RULE_CONFIGURATION = {
-    'B': (2,),  # Birth
-    'S': (1, 2)  # Survival
+    'b': (2,),  # Birth
+    's': (1, 2)  # Survival
 }
 
 GRID_CONFIGURATION = {
-    'CELL_RADIUS': 6,
-    'ROWS': 35,
-    'COLS': 42,
-    'CROP_BIGGER_GRIDS': True
+    'cell_radius': 6,
+    'rows': 35,
+    'cols': 42,
+    'crop_bigger_grids': True
 }
+
+GRID_CONFIGURATION['rows'] = 5
+GRID_CONFIGURATION['cols'] = 3
 
 
 class Game:
-    def __init__(self, seed, max_steps=100):
-        self.helper = GridHelper(GRID_CONFIGURATION)
-        self.generation = Generation(self.helper.sanitize(seed))
+    def __init__(self, seed, max_steps=0):
+        self.helper = helper.GridHelper(**GRID_CONFIGURATION)
+        seed = self.helper.sanitize(seed)
+        self.generation = Generation(seed)
+        self.illustrator = Game.__set_up_illustrator(seed)
         self.max = max_steps
         self.count = 0
 
     def play(self):
-        self.generation.draw()
+        self.illustrator.draw(self.generation)
 
         while self.count < self.max:
             self.generation = self.generation.tick()
-            self.generation.draw()
+            self.illustrator.draw(self.generation)
             self.count += 1
+
+    @staticmethod
+    def __set_up_illustrator(seed):
+        config = {
+            'cell_radius': GRID_CONFIGURATION.get('cell_radius'),
+            'row_size': len(seed),
+            'col_size': len(seed[0])
+        }
+        return helper.Illustrator(**config)
 
 
 class Generation:
-    def __init__(self, grid):
+    def __init__(self, grid, previous=None):
         self._grid = grid
-        self._rows = len(self._grid)
-        self._cols = len(self._grid[0])
-
-    def draw(self):
-        # TODO
-        pass
+        self._previous = previous
+        self._row_size = len(self._grid)
+        self._col_size = len(self._grid[0])
 
     def tick(self):
-        new_grid = [[
-            (self._is_born((row_i, col_i)) or self._survives((row_i, col_i)))
-            for col_i, col in enumerate(row)]
-            for row_i, row in enumerate(self._grid)]
-        return Generation(new_grid)
+        new_grid = [
+            [
+                (
+                    self._is_born((row_index, col_index))
+                    or self._survives((row_index, col_index))
+                )
+                for col_index, col in enumerate(row)
+            ]
+            for row_index, row in enumerate(self._grid)
+        ]
+        return Generation(new_grid, self)
 
     def is_alive(self, cell):
         row, col = cell
         return self._grid[row][col]
 
+    def was_alive(self, cell):
+        if self._previous:
+            return self._previous.is_alive(cell)
+        else:
+            return self.is_alive(cell)
+
     def _is_born(self, cell):
         return not self.is_alive(cell) \
-               and sum(self._neighbours(cell)) in RULE_CONFIGURATION.get('B')
+               and sum(self._neighbours(cell)) in RULE_CONFIGURATION.get('b')
 
     def _survives(self, cell):
         return self.is_alive(cell) \
-               and sum(self._neighbours(cell)) in RULE_CONFIGURATION.get('S')
+               and sum(self._neighbours(cell)) in RULE_CONFIGURATION.get('s')
 
     def _neighbours(self, cell):
         row, col = cell
-        positions = self._relative_neighbour_coordinates(row % 2)
+        positions = Generation._relative_neighbour_coordinates(row % 2)
 
         neighbours = [
-            self._grid[(row + r) % self._rows][(col + c) % self._cols]
-            for (r, c) in positions]
+            self._grid[(row + r) % self._row_size][(col + c) % self._col_size]
+            for (r, c) in positions
+        ]
         return neighbours
 
     @staticmethod
