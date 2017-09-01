@@ -21,9 +21,6 @@ GRID_CONFIGURATION = {
     'crop_bigger_grids': True
 }
 
-GRID_CONFIGURATION['rows'] = 5  # test settings TODO remove
-GRID_CONFIGURATION['cols'] = 3  # test settings TODO remove
-
 # Colors taken from 'Nord' by arcticicestudio
 # https://git.io/nord
 COLOR_CONFIGURATION = {
@@ -59,6 +56,8 @@ class Game:
             self.generation = self.generation.tick()
             self.illustrator.draw(self.generation)
             self.count += 1
+
+        self.illustrator.save_gif()
 
     @staticmethod
     def __set_up_illustrator(seed):

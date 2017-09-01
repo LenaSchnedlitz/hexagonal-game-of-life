@@ -33,7 +33,7 @@ class GridHelper:
             return self.__crop_cols(grid, length)
 
         else:
-            return GridHelper.__fill_grid(grid, length)
+            return GridHelper.__fill(grid, length)
 
     def sanitize_rows(self, grid):
         if len(grid) < self.row_count:
@@ -85,11 +85,12 @@ class GridHelper:
         return small, big
 
     @staticmethod
-    def __fill_grid(grid, max_length):
+    def __fill(grid, max_length):
         return [
             row
             + [False] * (max_length - len(row))
-            for row in grid]
+            for row in grid
+        ]
 
 
 class HexGeometry:
@@ -137,6 +138,8 @@ class HexGeometry:
 
 class Illustrator:
     def __init__(self, color_config, cell_radius, row_count, col_count):
+        self.frames = []
+
         # Grid
         self.cell_radius = cell_radius
         self.row_count = row_count
@@ -168,10 +171,22 @@ class Illustrator:
                 cell = [row, col]
                 color = self.palette[
                     2 * generation.is_alive(cell) + generation.was_alive(cell)
-                ]
+                    ]
                 draw.polygon(HexGeometry.hexagon(row, col, **params),
                              fill=color, outline=color)
-        img.show()
+        self.frames.append(img)
+
+    def save_gif(self):
+        file = open("game.gif", "wb")
+        self.frames[0].save(
+            file,
+            append_images=self.frames[1:],
+            duration=500,
+            loop=0,
+            optimize=True,
+            save_all=True
+        )
+        file.close()
 
     def __beautify(self, length):
         """Add minimum padding, then round up to next multiple of n."""
