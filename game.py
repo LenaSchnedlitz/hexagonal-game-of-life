@@ -21,7 +21,7 @@ GRID_CONFIGURATION = {
     'crop_bigger_grids': True
 }
 
-# Colors taken from 'Nord' by arcticicestudio
+# Colors taken from 'Nord' by Arctic Ice Studio
 # https://git.io/nord
 COLOR_CONFIGURATION = {
     'palette': 'dark_mode',
@@ -41,7 +41,7 @@ COLOR_CONFIGURATION = {
 
 
 class Game:
-    def __init__(self, seed, max_steps=5):
+    def __init__(self, seed, max_steps=100):
         self.helper = helper.GridHelper(**GRID_CONFIGURATION)
         seed = self.helper.sanitize(seed)
         self.generation = Generation(seed)
@@ -57,7 +57,7 @@ class Game:
             self.illustrator.draw(self.generation)
             self.count += 1
 
-        self.illustrator.save_gif()
+        # self.illustrator.save_gif()
 
     @staticmethod
     def __set_up_illustrator(seed):
@@ -135,4 +135,4 @@ test_seed = [
     [True, True, False, True]
 ]
 
-Game(test_seed).play()
+Game(test_seed, 0).play()

@@ -1,9 +1,9 @@
 """
 Helper classes for hexagonal game of life implementations.
 """
+import math
 
-import math as math
-
+import matplotlib.pyplot as plot
 from PIL import Image, ImageDraw
 
 
@@ -157,7 +157,7 @@ class Illustrator:
         self.palette = color_config.get(color_config['palette'])
         assert len(self.palette) >= 4
 
-    def draw(self, generation):
+    def draw_with_pillow(self, generation):
         img = Image.new('RGB', [self.width, self.height], self.palette[0])
         draw = ImageDraw.Draw(img, 'RGB')
         params = {
@@ -176,12 +176,30 @@ class Illustrator:
                              fill=color, outline=color)
         self.frames.append(img)
 
+    def draw(self, generation):
+        params = {
+            'radius': self.cell_radius,
+            'w_offset': self.w_offset,
+            'h_offset': self.h_offset
+        }
+        for row in range(self.row_count):
+            for col in range(self.col_count + row % 2):
+                cell = [row, col]
+                color = self.palette[
+                    2 * generation.is_alive(cell) + generation.was_alive(cell)
+                    ]
+                polygon = plot.Polygon(HexGeometry.hexagon(row, col, **params))
+                plot.gca().add_patch(polygon)
+        plot.plot()
+        plot.axis('off')
+        plot.show()
+
     def save_gif(self):
         file = open("game.gif", "wb")
         self.frames[0].save(
             file,
             append_images=self.frames[1:],
-            duration=500,
+            duration=300,
             loop=0,
             optimize=True,
             save_all=True
