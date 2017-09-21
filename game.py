@@ -43,13 +43,17 @@ SPEED = 100  # gif speed
 
 
 class Game:
-    def __init__(self, seed, max_steps=100):
-        self.helper = helper.GridHelper(**GRID_CONFIGURATION)
-        seed = self.helper.sanitize(seed)
-        self.generation = Generation(seed)
-        self.illustrator = Game.__set_up_illustrator(seed)
+    def __init__(self, seed=None, max_steps=100):
         self.max = max_steps
         self.count = 0
+        self.helper = helper.GridHelper(**GRID_CONFIGURATION)
+
+        if not seed:
+            seed = [[True, True]]
+        seed = self.helper.sanitize(seed)
+
+        self.illustrator = Game.__set_up_illustrator(seed)
+        self.generation = Generation(seed)
 
     def play(self):
         self.illustrator.draw(self.generation)
@@ -130,11 +134,4 @@ class Generation:
         )
 
 
-test_seed = [
-    [False, False, False, True],
-    [False, False, True, False],
-    [False, True, False, True],
-    [True, True, False, True]
-]
-
-Game(test_seed).play()
+Game().play()

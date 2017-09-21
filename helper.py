@@ -179,7 +179,8 @@ class Illustrator:
         self.frames.append(img)
 
     def save_gif(self):
-        file = open('game.gif', 'wb')
+        file_name = 'game.gif'
+        file = open(file_name, 'wb')
         self.frames[0].save(
             file,
             append_images=self.frames[1:],
@@ -189,7 +190,7 @@ class Illustrator:
             save_all=True
         )
         file.close()
-        print('Gif saved.')
+        print(file_name + ' saved.')
 
     def __beautify(self, length):
         """Add minimum padding, then round up to next multiple of n."""
