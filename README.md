@@ -8,7 +8,8 @@ Conway's Game of Life on a hexagonal grid.
 
 ## How to Use
 ### Requirements
-This program requires **Python 3.6**. Other requirements can be installed via
+This program requires **Python 3.6**.  
+All other requirements are listed in *requirements.txt* and can be installed with Pip:
 ```
 pip install -r requirements.txt
 ```
@@ -21,8 +22,12 @@ General settings can be found in *game.py*. The following attributes are availab
 * `COLOR_CONFIGURATION`: Color palette settings
 * `SPEED`: Transition speed of gif frames
 
-#### Game  
-To start a new game, you have to create a new instance of the `Game` class. You can use any 2d-array of booleans as a `seed`. If not specified otherwise, 100 ticks (= generation progressions) will be made.
+#### Game
+A new game can be started by calling the `play()`-Method of a `Game` instance.  
+
+The `Game` constructor takes up to two parameters:
+* `seed`: a 2 dimensional boolean array
+* `ticks`: number of produced generations
 
 ### Output
-Generated `.gif`-files are saved as *'game.gif'* in the main program folder.
+Generated *.gif*-files are saved as *'game.gif'* in the main program folder.
