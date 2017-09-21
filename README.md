@@ -23,7 +23,7 @@ General settings can be found in *game.py*. The following attributes are availab
 * `SPEED`: Transition speed of gif frames
 
 #### Game
-A new game can be started by calling the `play()`-Method of a `Game` instance.  
+A new game can be started by calling the `play()` method of a `Game` instance.
 
 The `Game` constructor takes up to two parameters:
 * `seed`: a 2 dimensional boolean array
@@ -35,4 +35,4 @@ python game.py
 ```
 
 ### Output
-Generated *.gif*-files are saved as *'game.gif'* in the main program folder.
+Generated *.gif* files are saved as *'game.gif'* in the main program folder.
