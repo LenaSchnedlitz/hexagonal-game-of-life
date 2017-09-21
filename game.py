@@ -10,12 +10,12 @@ Rules: B2/S12
 import helper as helper
 
 RULE_CONFIGURATION = {
-    'b': (2,),  # Birth
-    's': (1, 2)  # Survival
+    'b': (2,),  # birth
+    's': (1, 2)  # survival
 }
 
 GRID_CONFIGURATION = {
-    'cell_radius': 6,
+    'cell_radius': 12,
     'rows': 37,
     'cols': 43,
     'crop_bigger_grids': True
@@ -24,7 +24,7 @@ GRID_CONFIGURATION = {
 # Colors taken from 'Nord' by Arctic Ice Studio
 # https://git.io/nord
 COLOR_CONFIGURATION = {
-    'palette': 'dark_mode',
+    'palette': 'light_mode',
     'dark_mode': [
         (46, 52, 64),  # dead
         (59, 66, 82),  # dying
@@ -38,6 +38,8 @@ COLOR_CONFIGURATION = {
         (46, 52, 64)  # alive
     ]
 }
+
+SPEED = 100  # gif speed
 
 
 class Game:
@@ -57,7 +59,7 @@ class Game:
             self.illustrator.draw(self.generation)
             self.count += 1
 
-        # self.illustrator.save_gif()
+        self.illustrator.save_gif()
 
     @staticmethod
     def __set_up_illustrator(seed):
@@ -66,7 +68,7 @@ class Game:
             'row_count': len(seed),
             'col_count': len(seed[0])
         }
-        return helper.Illustrator(COLOR_CONFIGURATION, **config)
+        return helper.Illustrator(COLOR_CONFIGURATION, SPEED, **config)
 
 
 class Generation:
@@ -135,4 +137,4 @@ test_seed = [
     [True, True, False, True]
 ]
 
-Game(test_seed, 0).play()
+Game(test_seed).play()

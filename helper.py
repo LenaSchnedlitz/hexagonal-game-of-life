@@ -3,7 +3,6 @@ Helper classes for hexagonal game of life implementations.
 """
 import math
 
-import matplotlib.pyplot as plot
 from PIL import Image, ImageDraw
 
 
@@ -137,7 +136,7 @@ class HexGeometry:
 
 
 class Illustrator:
-    def __init__(self, color_config, cell_radius, row_count, col_count):
+    def __init__(self, color_config, speed, cell_radius, row_count, col_count):
         self.frames = []
 
         # Grid
@@ -154,57 +153,43 @@ class Illustrator:
         self.h_offset = HexGeometry.height_offset(raw_h_offset, cell_radius)
 
         # Color
-        self.palette = color_config.get(color_config['palette'])
-        assert len(self.palette) >= 4
+        palette = color_config.get(color_config['palette'])
+        assert len(palette) >= 4
+        self.palette = [col for row in palette for col in row]
 
-    def draw_with_pillow(self, generation):
-        img = Image.new('RGB', [self.width, self.height], self.palette[0])
-        draw = ImageDraw.Draw(img, 'RGB')
-        params = {
-            'radius': self.cell_radius,
-            'w_offset': self.w_offset,
-            'h_offset': self.h_offset
-        }
-
-        for row in range(self.row_count):
-            for col in range(self.col_count + row % 2):
-                cell = [row, col]
-                color = self.palette[
-                    2 * generation.is_alive(cell) + generation.was_alive(cell)
-                    ]
-                draw.polygon(HexGeometry.hexagon(row, col, **params),
-                             fill=color, outline=color)
-        self.frames.append(img)
+        # Speed
+        self.speed = speed
 
     def draw(self, generation):
+        img = Image.new('P', [self.width, self.height], 0)
+        img.putpalette(self.palette)
+        draw = ImageDraw.Draw(img, 'P')
         params = {
             'radius': self.cell_radius,
             'w_offset': self.w_offset,
             'h_offset': self.h_offset
         }
+
         for row in range(self.row_count):
             for col in range(self.col_count + row % 2):
-                cell = [row, col]
-                color = self.palette[
-                    2 * generation.is_alive(cell) + generation.was_alive(cell)
-                    ]
-                polygon = plot.Polygon(HexGeometry.hexagon(row, col, **params))
-                plot.gca().add_patch(polygon)
-        plot.plot()
-        plot.axis('off')
-        plot.show()
+                draw.polygon(
+                    HexGeometry.hexagon(row, col, **params),
+                    fill=Illustrator.__get_color_index(generation, row, col)
+                )
+        self.frames.append(img)
 
     def save_gif(self):
-        file = open("game.gif", "wb")
+        file = open('game.gif', 'wb')
         self.frames[0].save(
             file,
             append_images=self.frames[1:],
-            duration=300,
+            duration=self.speed,
             loop=0,
             optimize=True,
             save_all=True
         )
         file.close()
+        print('Gif saved.')
 
     def __beautify(self, length):
         """Add minimum padding, then round up to next multiple of n."""
@@ -216,3 +201,8 @@ class Illustrator:
         offset = (pretty_length - length) / 2
 
         return int(pretty_length), offset
+
+    @staticmethod
+    def __get_color_index(generation, row, col):
+        cell = [row, col]
+        return 2 * generation.is_alive(cell) + generation.was_alive(cell)
