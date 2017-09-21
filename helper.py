@@ -190,7 +190,7 @@ class Illustrator:
             save_all=True
         )
         file.close()
-        print('Gif saved as ' + file_name)
+        print('Gif saved as "' + file_name + '"')
 
     def __beautify(self, length):
         """Add minimum padding, then round up to next multiple of n."""
