@@ -44,6 +44,8 @@ SPEED = 100  # gif speed
 
 class Game:
     def __init__(self, seed=None, max_steps=100):
+        assert max_steps >= 0
+
         self.max = max_steps
         self.count = 0
         self.helper = helper.GridHelper(**GRID_CONFIGURATION)
