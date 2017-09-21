@@ -43,10 +43,10 @@ SPEED = 100  # gif speed
 
 
 class Game:
-    def __init__(self, seed=None, max_steps=100):
-        assert max_steps >= 0
+    def __init__(self, seed=None, ticks=100):
+        assert ticks >= 0
 
-        self.max = max_steps
+        self.number_of_ticks = ticks
         self.count = 0
         self.helper = helper.GridHelper(**GRID_CONFIGURATION)
 
@@ -60,7 +60,7 @@ class Game:
     def play(self):
         self.illustrator.draw(self.generation)
 
-        while self.count < self.max:
+        while self.count < self.number_of_ticks:
             self.generation = self.generation.tick()
             self.illustrator.draw(self.generation)
             self.count += 1
