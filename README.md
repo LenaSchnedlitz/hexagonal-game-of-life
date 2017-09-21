@@ -29,7 +29,10 @@ The `Game` constructor takes up to two parameters:
 * `seed`: a 2 dimensional boolean array
 * `ticks`: number of produced generations
 
-Executing *game.py* will start a default game.
+Executing *game.py* will start a default game:
+```
+python game.py
+```
 
 ### Output
 Generated *.gif*-files are saved as *'game.gif'* in the main program folder.
