@@ -180,16 +180,15 @@ class Illustrator:
 
     def save_gif(self):
         file_name = 'game.gif'
-        file = open(file_name, 'wb')
-        self.frames[0].save(
-            file,
-            append_images=self.frames[1:],
-            duration=self.speed,
-            loop=0,
-            optimize=True,
-            save_all=True
-        )
-        file.close()
+        with open(file_name, 'wb') as file:
+            self.frames[0].save(
+                file,
+                append_images=self.frames[1:],
+                duration=self.speed,
+                loop=0,
+                optimize=True,
+                save_all=True
+            )
         print('Gif saved as "' + file_name + '"')
 
     def __beautify(self, length):
