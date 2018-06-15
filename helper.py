@@ -1,6 +1,4 @@
-"""
-Helper classes for hexagonal game of life implementations.
-"""
+"""Helper classes"""
 import math
 
 from PIL import Image, ImageDraw

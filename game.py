@@ -1,11 +1,9 @@
-"""
-A variant of Conway's Game of Life on a hexagonal grid.
+"""A variant of Conway's Game of Life on a hexagonal grid.
 
 Rules: B2/S12
  - Dead cells with two live neighbours are born.
  - Live cells with one or two live neighbours survive.
  - All other live cells die.
-
 """
 import helper as helper
 
@@ -88,8 +86,8 @@ class Generation:
         new_grid = [
             [
                 (
-                    self._is_born((row_index, col_index))
-                    or self._survives((row_index, col_index))
+                        self._is_born((row_index, col_index))
+                        or self._survives((row_index, col_index))
                 )
                 for col_index, col in enumerate(row)
             ]
