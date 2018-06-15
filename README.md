@@ -6,7 +6,7 @@
 # Hexagonal Game of Life
 Conway's Game of Life on a hexagonal grid.
 
-[Demo Gif](https://github.com/Mailea/hexagonal-game-of-life/blob/master/demo.gif)
+![Demo Gif](https://github.com/Mailea/hexagonal-game-of-life/blob/master/demo.gif)
 
 ## How to Use
 ### Requirements
