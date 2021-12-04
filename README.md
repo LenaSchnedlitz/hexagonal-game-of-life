@@ -1,12 +1,12 @@
-<p align="center">
-  <img src="https://github.com/Mailea/hexagonal-game-of-life/blob/master/logo.png"/>
-</p>
+<div align="center">
+  <img src="logo.png"/>
+</div>
 
 # Hexagonal Game of Life
 
 Conway's Game of Life on a hexagonal grid.
 
-![Demo Gif](https://github.com/Mailea/hexagonal-game-of-life/blob/master/demo.gif)
+![Demo Gif](demo.gif)
 
 ## How to Use
 
